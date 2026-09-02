@@ -20,7 +20,7 @@ describe('validarPedido', () => {
     expect(resultado.errores).to.include('El total debe ser mayor a 0');
   });
 
-  // Regla 2: El método de pago debe ser uno de: 'tarjeta', 'PSE', 'contraentrega'
+  // Regla 2: El método de pago debe ser uno de: 'tarjeta', 'PSE', 'contraentrega' como vamos a colocar efectivo es invalido
   it('el método de pago debe ser tarjeta, PSE o contraentrega', () => {
     // Arrange
     const pedido = {
@@ -54,5 +54,24 @@ describe('validarPedido', () => {
     expect(resultado.errores).to.include('El pago contraentrega no admite pedidos mayores a $500.000');
   });
 
+  // Regla 4: Caso feliz (pedido completamente válido)
+  it('debe ser válido con productos, total positivo y método de pago tarjeta', () => {
+    // Arrange
+    const pedido = {
+      items: ['cuaderno', 'lapicero'],
+      total: 45000,
+      metodoPago: 'tarjeta'
+    };
+
+    // Act
+    const resultado = validarPedido(pedido);
+
+    // Assert
+    expect(resultado.valido).to.be.true;
+    expect(resultado.errores.length).to.equal(0);
+  });
+
 });
-//Y bueno como todavia no hemos agregado esta condicion en la logica el test debe fallar que es practicamente lo que hemos echo en las demas reglas 
+
+
+//  Acá estamos cubriendo el caso felizzzzzzzzzzzzzz full verde
