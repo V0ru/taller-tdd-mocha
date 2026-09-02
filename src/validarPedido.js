@@ -6,10 +6,15 @@ function validarPedido(pedido) {
     errores.push('El total debe ser mayor a 0');
   }
 
-  // Regla 2: El método de pago debe ser uno de: 'tarjeta', 'PSE', 'contraentrega' Ahora esta la validacion minima ecesaria para hacer que pase como dice el profe 
+  // Regla 2: El método de pago debe ser uno de: 'tarjeta', 'PSE', 'contraentrega'
   const metodosValidos = ['tarjeta', 'PSE', 'contraentrega'];
   if (!metodosValidos.includes(pedido.metodoPago)) {
     errores.push('Método de pago no válido');
+  }
+
+  // Regla 3: Si es contraentrega y supera 500000, no es válido
+  if (pedido.metodoPago === 'contraentrega' && pedido.total > 500000) {
+    errores.push('El pago contraentrega no admite pedidos mayores a $500.000');
   }
 
   return {
@@ -19,3 +24,4 @@ function validarPedido(pedido) {
 }
 
 module.exports = validarPedido;
+//y bueno aca como ya agregamos la condiciion el la logica el test debe funcionar 
