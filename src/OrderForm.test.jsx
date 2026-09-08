@@ -62,6 +62,28 @@ describe('OrderForm - Frontend TDD Tests', () => {
     expect(errorMessage).toBeInTheDocument();
   });
 
+  // Regla 4: Caso feliz (pedido completamente válido)
+  test('Rule 4: displays success message when order is completely valid', async () => {
+    const user = userEvent.setup();
+    render(<OrderForm />);
+
+    const itemsInput = screen.getByLabelText(/product \/ items/i);
+    const totalInput = screen.getByLabelText(/total amount/i);
+    const paymentSelect = screen.getByLabelText(/payment method/i);
+    const submitButton = screen.getByRole('button', { name: /validate order/i });
+
+    await user.type(itemsInput, 'cuaderno, lapicero');
+    await user.clear(totalInput);
+    await user.type(totalInput, '45000');
+    await user.selectOptions(paymentSelect, 'tarjeta');
+    await user.click(submitButton);
+
+    const successMessage = await screen.findByRole('status');
+    expect(successMessage).toHaveTextContent(/order placed successfully!/i);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
 });
+
 
 
