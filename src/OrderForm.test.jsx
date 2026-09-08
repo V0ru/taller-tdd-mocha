@@ -42,5 +42,26 @@ describe('OrderForm - Frontend TDD Tests', () => {
     expect(errorMessage).toBeInTheDocument();
   });
 
+  // Regla 3: Si es contraentrega y supera 500000, no es válido
+  test('Rule 3: shows error when cash on delivery exceeds 500,000', async () => {
+    const user = userEvent.setup();
+    render(<OrderForm />);
+
+    const itemsInput = screen.getByLabelText(/product \/ items/i);
+    const totalInput = screen.getByLabelText(/total amount/i);
+    const paymentSelect = screen.getByLabelText(/payment method/i);
+    const submitButton = screen.getByRole('button', { name: /validate order/i });
+
+    await user.type(itemsInput, 'cuaderno');
+    await user.clear(totalInput);
+    await user.type(totalInput, '600000');
+    await user.selectOptions(paymentSelect, 'contraentrega');
+    await user.click(submitButton);
+
+    const errorMessage = await screen.findByText(/cash on delivery is not available for orders exceeding \$500,000\./i);
+    expect(errorMessage).toBeInTheDocument();
+  });
+
 });
+
 
