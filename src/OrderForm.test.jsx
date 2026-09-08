@@ -22,4 +22,25 @@ describe('OrderForm - Frontend TDD Tests', () => {
     expect(errorMessage).toBeInTheDocument();
   });
 
+  // Regla 2: El método de pago debe ser tarjeta, PSE o contraentrega
+  test('Rule 2: shows error when an invalid payment method is selected', async () => {
+    const user = userEvent.setup();
+    render(<OrderForm />);
+
+    const itemsInput = screen.getByLabelText(/product \/ items/i);
+    const totalInput = screen.getByLabelText(/total amount/i);
+    const paymentSelect = screen.getByLabelText(/payment method/i);
+    const submitButton = screen.getByRole('button', { name: /validate order/i });
+
+    await user.type(itemsInput, 'cuaderno');
+    await user.clear(totalInput);
+    await user.type(totalInput, '50000');
+    await user.selectOptions(paymentSelect, 'efectivo');
+    await user.click(submitButton);
+
+    const errorMessage = await screen.findByText(/invalid payment method/i);
+    expect(errorMessage).toBeInTheDocument();
+  });
+
 });
+

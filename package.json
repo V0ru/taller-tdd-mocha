@@ -12,6 +12,9 @@
     "test:backend": "mocha test --exit"
   },
   "jest": {
+    "testMatch": [
+      "<rootDir>/src/**/*.test.{js,jsx}"
+    ],
     "testEnvironment": "jsdom",
     "setupFilesAfterEnv": [
       "@testing-library/jest-dom"
