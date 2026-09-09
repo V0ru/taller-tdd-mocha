@@ -1,5 +1,5 @@
-const { expect } = require('chai');
-const validarPedido = require('../src/validarPedido');
+import { expect } from 'chai';
+import validarPedido from '../src/validarPedido.js';
 
 describe('validarPedido', () => {
 
@@ -16,6 +16,7 @@ describe('validarPedido', () => {
     expect(resultado.valido).to.be.false;
     expect(resultado.errores).to.include('the total must be greater than 0');
   });
+
   // Regla 2: El método de pago debe ser uno de: 'tarjeta', 'PSE', 'contraentrega' como vamos a colocar efectivo es invalido
   it('The payment method must be card, PSE, or cash on delivery.', () => {
     const pedido = {
@@ -46,6 +47,7 @@ describe('validarPedido', () => {
     expect(resultado.valido).to.be.false;
     expect(resultado.errores).to.include('Cash on delivery is not available for orders exceeding $500,000.');
   });
+
   // Regla 4: Caso feliz (pedido completamente válido)
   it('It must be valid with products, a positive total, and card payment.', () => {
     // Arrange

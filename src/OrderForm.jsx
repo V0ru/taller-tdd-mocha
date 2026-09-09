@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import validarPedido from './validarPedido';
 
 export default function OrderForm() {
   const [items, setItems] = useState('');
@@ -9,27 +10,18 @@ export default function OrderForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const nuevosErrores = [];
-    const totalNum = Number(total);
 
-    // Regla 1: El total debe ser mayor a 0
-    if (totalNum <= 0 || isNaN(totalNum)) {
-      nuevosErrores.push('the total must be greater than 0');
-    }
+    // Refactor Frontend: Delegar la validación de las reglas al validador del dominio
+    const pedido = {
+      items,
+      total: total === '' ? 0 : Number(total),
+      metodoPago
+    };
 
-    // Regla 2: Método de pago válido ('tarjeta', 'PSE', 'contraentrega')
-    const metodosValidos = ['tarjeta', 'PSE', 'contraentrega'];
-    if (!metodosValidos.includes(metodoPago)) {
-      nuevosErrores.push('Invalid payment method');
-    }
+    const resultado = validarPedido(pedido);
 
-    // Regla 3: Contraentrega no admite pedidos mayores a 500.000
-    if (metodoPago === 'contraentrega' && totalNum > 500000) {
-      nuevosErrores.push('Cash on delivery is not available for orders exceeding $500,000.');
-    }
-
-    if (nuevosErrores.length > 0) {
-      setErrores(nuevosErrores);
+    if (!resultado.valido) {
+      setErrores(resultado.errores);
       setSuccessMessage('');
     } else {
       setErrores([]);
